@@ -57,9 +57,9 @@
                 </p>
                 <p class="text-lg">
                     <span class="font-semibold">เกณฑ์ความชื้นปัจจุบัน:</span>
-                    @if($currentThreshold == 200)
+                    @if($currentThreshold == 350)
                         ชื้นมาก
-                    @elseif($currentThreshold == 400)
+                    @elseif($currentThreshold == 450)
                         ชื้นปานกลาง
                     @elseif($currentThreshold == 600)
                         แห้ง
@@ -90,10 +90,10 @@
         <form id="moistureForm" action="{{ route('update.threshold') }}" method="POST" class="space-y-4">
             @csrf
             <div class="grid grid-cols-2 gap-4">
-                <button type="button" onclick="showConfirmation(200, 'ชื้นมาก')" class="flex items-center justify-center bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition">
+                <button type="button" onclick="showConfirmation(350, 'ชื้นมาก')" class="flex items-center justify-center bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition">
                     <i class="fas fa-seedling mr-2"></i> ชื้นมาก
                 </button>
-                <button type="button" onclick="showConfirmation(400, 'ชื้นปานกลาง')" class="flex items-center justify-center bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600 transition">
+                <button type="button" onclick="showConfirmation(450, 'ชื้นปานกลาง')" class="flex items-center justify-center bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600 transition">
                     <i class="fas fa-leaf mr-2"></i> ชื้นปานกลาง
                 </button>
                 <button type="button" onclick="showConfirmation(600, 'แห้ง')" class="flex items-center justify-center bg-yellow-500 text-white py-2 px-4 rounded hover:bg-yellow-600 transition">
@@ -108,7 +108,7 @@
 
         <h2 class="text-2xl font-bold mt-8 mb-4 text-green-600">กล้อง</h2>
         <div class="aspect-w-16 aspect-h-9">
-                <iframe src="https://vdo.ninja/?view=4FDigv3"
+                <iframe src="https://vdo.ninja/?view=q9XU6as"
                         allow="microphone;camera;fullscreen;display-capture;autoplay"
                         style="width: 100%; height: 500px; border: none;"></iframe>
             </div>
