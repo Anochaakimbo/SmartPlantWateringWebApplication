@@ -1,5 +1,5 @@
 <?php
-
+use App\Http\Controllers\WateringHistoryController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SensorController;
 use App\Http\Controllers\CameraController;
@@ -12,4 +12,9 @@ Route::get('/sensor-display', [SensorController::class, 'showThresholdForm'])->n
 
 // ใช้ Route นี้สำหรับอัปเดตค่า moisture threshold
 Route::post('/threshold', [SensorController::class, 'updateThreshold'])->name('update.threshold');
+
+Route::get('/watering-history', [WateringHistoryController::class, 'index']);
+
+Route::get('/test-daily-summary', [WateringHistoryController::class,'sendDailyWateringSummary']);
+
 
