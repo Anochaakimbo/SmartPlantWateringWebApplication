@@ -125,7 +125,7 @@
             </a>
         </div>
         <div class="aspect-w-16 aspect-h-9">
-            <iframe src="https://vdo.ninja/?view=q9XU6as" allow="microphone;camera;fullscreen;display-capture;autoplay"
+            <iframe src="https://vdo.ninja/?view=rbEvdavpY" allow="microphone;camera;fullscreen;display-capture;autoplay"
                 style="width: 100%; height: 500px; border: none;"></iframe>
         </div>
 
@@ -169,6 +169,40 @@
         function submitForm() {
             document.getElementById('moistureForm').submit();
         }
+    </script>
+    <script>
+        function captureSnapshot() {
+            const iframe = document.querySelector('iframe');
+            const iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
+            const videoElement = iframeDocument.querySelector('video');
+
+            if (videoElement) {
+                const canvas = document.createElement('canvas');
+                canvas.width = videoElement.videoWidth;
+                canvas.height = videoElement.videoHeight;
+                const context = canvas.getContext('2d');
+                context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+                const imageData = canvas.toDataURL('image/png');
+
+                // ส่งภาพไปที่เซิร์ฟเวอร์
+                fetch('{{ route('save.snapshot') }}', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
+                        body: JSON.stringify({
+                            image: imageData
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => console.log(data))
+                    .catch(error => console.error('Error:', error));
+            }
+        }
+
+        // เรียกทุก 1 นาที
+        setInterval(captureSnapshot, 60000);
     </script>
 
 

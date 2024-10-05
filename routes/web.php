@@ -17,4 +17,5 @@ Route::get('/watering-history', [WateringHistoryController::class, 'index']);
 
 Route::get('/test-daily-summary', [WateringHistoryController::class,'sendDailyWateringSummary']);
 
+Route::post('/save-snapshot', [CameraController::class, 'saveSnapshot'])->name('save.snapshot');
 
