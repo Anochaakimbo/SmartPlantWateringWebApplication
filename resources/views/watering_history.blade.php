@@ -4,22 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Watering History</title>
-    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        'sans': ['Sarabun', 'sans-serif'],
-                    }
-                }
-            }
-        }
-    </script>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600&display=swap');
+
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Sarabun', sans-serif;
             background-color: #f4f4f4;
         }
         .container {
@@ -52,16 +42,34 @@
             text-align: center;
             color: #999;
         }
+        .back-button {
+            margin-top: 20px;
+            text-align: left;
+        }
+        .back-button a {
+            display: inline-block;
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        .back-button a:hover {
+            background-color: #45a049;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Watering History</h1>
+        <div class="back-button">
+            <a href="javascript:history.back()">กลับ</a>
+        </div>
+        <h1>ประวัติการรดน้ำ</h1>
         <table class="table">
             <thead>
                 <tr>
                     <th>#</th>
-                    <th>Watering Time</th>
+                    <th>เวลาที่รดน้ำ</th>
                 </tr>
             </thead>
             <tbody>
@@ -74,11 +82,12 @@
                     @endforeach
                 @else
                     <tr>
-                        <td colspan="2" class="no-data">No watering history available.</td>
+                        <td colspan="2" class="no-data">ไม่มีประวัติการรดน้ำ</td>
                     </tr>
                 @endif
             </tbody>
         </table>
+
     </div>
 </body>
 </html>
