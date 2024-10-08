@@ -23,15 +23,14 @@
         }
     </script>
     <style>
+        body {
+            font-family: 'Sarabun', sans-serif;
+        }
+
         #videoElement {
             width: 100%;
             max-width: 640px;
             height: auto;
-        }
-    </style>
-    <style>
-        body {
-            font-family: 'Sarabun', sans-serif;
         }
     </style>
 </head>
@@ -39,8 +38,6 @@
 <body class="bg-green-50 text-gray-800 p-8">
     <div class="max-w-2xl mx-auto bg-white shadow-lg rounded-lg p-6">
         <h1 class="text-3xl font-bold mb-6 text-green-700">ค่าของเซนเซอร์ปัจจุบัน</h1>
-
-
 
         @if ($sensorData)
             @php
@@ -125,87 +122,131 @@
             </a>
         </div>
         <div class="aspect-w-16 aspect-h-9">
-            <iframe src="https://vdo.ninja/?view=rbEvdavpY" allow="microphone;camera;fullscreen;display-capture;autoplay"
+            <iframe src="https://vdo.ninja/?view=rbEvdavpY"
+                allow="microphone;camera;fullscreen;display-capture;autoplay"
                 style="width: 100%; height: 500px; border: none;"></iframe>
         </div>
 
-        @if (session('success'))
-            <div class="mt-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative"
-                role="alert">
-                <span class="block sm:inline">{{ session('success') }}</span>
-            </div>
-        @endif
-    </div>
 
-    <!-- Confirmation Modal -->
-    <div id="confirmationModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden items-center justify-center">
-        <div class="bg-white p-8 rounded-lg shadow-xl">
-            <h3 class="text-xl font-bold mb-4">ยืนยันการเปลี่ยนแปลง</h3>
-            <p id="confirmationMessage" class="mb-6"></p>
-            <div class="flex justify-end space-x-4">
-                <button onclick="closeConfirmation()"
-                    class="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400">ยกเลิก</button>
-                <button onclick="submitForm()"
-                    class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">ยืนยัน</button>
+        <!-- Confirmation Modal -->
+        <div id="confirmationModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden items-center justify-center">
+            <div class="bg-white p-8 rounded-lg shadow-xl">
+                <h3 class="text-xl font-bold mb-4">ยืนยันการเปลี่ยนแปลง</h3>
+                <p id="confirmationMessage" class="mb-6"></p>
+                <div class="flex justify-end space-x-4">
+                    <button onclick="closeConfirmation()"
+                        class="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400">ยกเลิก</button>
+                    <button onclick="submitForm()"
+                        class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">ยืนยัน</button>
+                </div>
             </div>
         </div>
-    </div>
 
-
-    <script>
-        function showConfirmation(threshold, label) {
-            document.getElementById('moistureThreshold').value = threshold;
-            document.getElementById('confirmationMessage').textContent =
-                `คุณต้องการเปลี่ยนความชื้นเป็น "${label}" (${threshold}) ใช่หรือไม่?`;
-            document.getElementById('confirmationModal').classList.remove('hidden');
-            document.getElementById('confirmationModal').classList.add('flex');
-        }
-
-        function closeConfirmation() {
-            document.getElementById('confirmationModal').classList.add('hidden');
-            document.getElementById('confirmationModal').classList.remove('flex');
-        }
-
-        function submitForm() {
-            document.getElementById('moistureForm').submit();
-        }
-    </script>
-    <script>
-        function captureSnapshot() {
-            const iframe = document.querySelector('iframe');
-            const iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
-            const videoElement = iframeDocument.querySelector('video');
-
-            if (videoElement) {
-                const canvas = document.createElement('canvas');
-                canvas.width = videoElement.videoWidth;
-                canvas.height = videoElement.videoHeight;
-                const context = canvas.getContext('2d');
-                context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
-                const imageData = canvas.toDataURL('image/png');
-
-                // ส่งภาพไปที่เซิร์ฟเวอร์
-                fetch('{{ route('save.snapshot') }}', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                        },
-                        body: JSON.stringify({
-                            image: imageData
-                        })
-                    })
-                    .then(response => response.json())
-                    .then(data => console.log(data))
-                    .catch(error => console.error('Error:', error));
+        <script>
+            function showConfirmation(threshold, label) {
+                document.getElementById('moistureThreshold').value = threshold;
+                document.getElementById('confirmationMessage').textContent =
+                    `คุณต้องการเปลี่ยนความชื้นเป็น "${label}" (${threshold}) ใช่หรือไม่?`;
+                document.getElementById('confirmationModal').classList.remove('hidden');
+                document.getElementById('confirmationModal').classList.add('flex');
             }
-        }
 
-        // เรียกทุก 1 นาที
-        setInterval(captureSnapshot, 60000);
-    </script>
+            function closeConfirmation() {
+                document.getElementById('confirmationModal').classList.add('hidden');
+                document.getElementById('confirmationModal').classList.remove('flex');
+            }
+
+            function submitForm() {
+                document.getElementById('moistureForm').submit();
+            }
+
+            let snapshotCount = 0;
+
+            function captureSnapshot() {
+                const iframe = document.querySelector('iframe');
+                const iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
+                const videoElement = iframeDocument.querySelector('video');
+
+                if (videoElement) {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = videoElement.videoWidth;
+                    canvas.height = videoElement.videoHeight;
+                    const context = canvas.getContext('2d');
+                    context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+                    const imageData = canvas.toDataURL('image/png');
+
+                    // ส่งภาพไปที่เซิร์ฟเวอร์
+                    fetch('{{ route('save.snapshot') }}', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                            },
+                            body: JSON.stringify({
+                                image: imageData
+                            })
+                        })
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Network response was not ok');
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            console.log('Snapshot saved:', data);
+                            updateSnapshotInfo();
+                        })
+                        .catch(error => {
+                            console.error('Error saving snapshot:', error);
+                            // อาจจะแสดง alert หรือข้อความแจ้งเตือนให้ผู้ใช้ทราบ
+                        });
 
 
+                    function updateSnapshotInfo() {
+                        snapshotCount++;
+                        const now = new Date();
+                        document.getElementById('lastSnapshotTime').textContent =
+                            `เวลาที่ถ่ายภาพล่าสุด: ${now.toLocaleString()}`;
+                        document.getElementById('snapshotCount').textContent = `จำนวนภาพที่ถ่าย: ${snapshotCount}`;
+                    }
+
+                    // กำหนดค่าความถี่ในการถ่ายภาพ (หน่วยเป็นมิลลิวินาที)
+                    const CAPTURE_INTERVAL = 60000; // 1 นาที
+
+                    // เริ่มการถ่ายภาพอัตโนมัติ
+                    function startAutomaticCapture() {
+                        console.log("เริ่มการถ่ายภาพอัตโนมัติทุก " + (CAPTURE_INTERVAL / 1000) + " วินาที");
+                        setInterval(captureSnapshot, CAPTURE_INTERVAL);
+                    }
+
+                    // เรียกใช้ฟังก์ชันเมื่อหน้าเว็บโหลดเสร็จ
+                    window.addEventListener('load', startAutomaticCapture);
+
+                    function captureSnapshot() {
+                        console.log("Attempting to capture snapshot");
+                        const iframe = document.querySelector('iframe');
+                        if (!iframe) {
+                            console.error("iframe not found");
+                            return;
+                        }
+
+                        let iframeDocument;
+                        try {
+                            iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
+                        } catch (error) {
+                            console.error("Cannot access iframe content:", error);
+                            return;
+                        }
+
+                        const videoElement = iframeDocument.querySelector('video');
+                        if (!videoElement) {
+                            console.error("Video element not found in iframe");
+                            return;
+                        }
+                    }
+                }
+            }
+        </script>
 </body>
 
 </html>
